@@ -1,0 +1,24 @@
+from time import sleep
+from pymeasure.experiment import Procedure, Results, Worker
+from pymeasure.experiment import IntegerParameter
+
+class SimpleProcedure(Procedure):
+    iterations = IntegerParameter('Loop iterations')
+    data_columns = ['Iteration']
+    
+    def execute(self):
+        for i in range(self.iterations):
+            self.emit(results,{'Iteration: ', i})
+            sleep(0.01)
+            if self.should_stop():
+                break
+if __name__ == '__main__':
+    procedure = SimpleProcedure()
+    procedure.iterations = 100
+    data_filename = 'zhopa3.csv'
+    results = Results(procedure, data_filename)
+    
+    worker = Worker(results)
+    worker.start()
+    
+    worker.join(timeout = 3600)
